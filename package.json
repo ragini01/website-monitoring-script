@@ -1,0 +1,21 @@
+{
+  "name": "website-monitoring-app",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "description": "",
+  "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
+    "axios": "^1.3.6",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.0.3",
+    "mongodb": "^5.3.0",
+    "nodemailer": "^6.9.1",
+    "request": "^2.88.2"
+  }
+}
