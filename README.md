@@ -59,14 +59,22 @@ I have implemented the hashing by converting string of texts to a 32-bit integer
 Assumption 4:
 
 We can modify the main `app.js` file to run as a cloud function on a serverless platform like AWS Lambda. The code for this may look like,
+
 `exports.handler = async (event) => {`
-  `try {`
-     `// Fetch website HTML contents`
-     `// Check if website content has changed`
-     `if (websiteHash !== dbHash) {`
-      `// Website content has changed, notify user and store change in database`
-     `} catch{`
-    `}`  
+
+`try {`
+  
+`// Fetch website HTML contents`
+     
+`// Check if website content has changed`
+     
+`if (websiteHash !== dbHash) {`
+     
+`// Website content has changed, notify user and store change in database`
+      
+`} catch{`
+     
+`}`  
 
 After making the code changes,
 - Need to create a new Node.js Lambda function in the AWS console
