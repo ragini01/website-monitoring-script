@@ -56,6 +56,25 @@ Hence, this technique may provide a consistent and reliable way to monitor the w
 
 I have implemented the hashing by converting string of texts to a 32-bit integer as I found it a simple and fast way to generate hashes. Well cryptographic hash functions using `Crypto-js` module is also a better approach in terms of security. It is a one-way hash function which produces a fixed length output. On the other hand, converting strings to a 32-bit integer can be choosed if performance is the priority.
 
+Assumption 4:
+
+We can modify the main `app.js` file to run as a cloud function on a serverless platform like AWS Lambda. The code for this may look like,
+`exports.handler = async (event) => {`
+  `try {`
+     `// Fetch website HTML contents`
+     `// Check if website content has changed`
+     `if (websiteHash !== dbHash) {`
+      `// Website content has changed, notify user and store change in database`
+     `} catch{`
+    `}`  
+
+After making the code changes,
+- Need to create a new Node.js Lambda function in the AWS console
+- We can modify the db connection string to use cloud based Mongo db instead of local db
+- We can also use cloud based email services like Amazon SES
+- Now, copy the code to Lambda function code editor
+- Save it and can test the function
+
 
 
 
