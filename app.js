@@ -1,18 +1,16 @@
+// Import required modules
 const axios = require('axios');
 const { MongoClient } = require('mongodb');
 const config = require('./config');
 const sgMail = require('@sendgrid/mail');
 
 // Use 'config' object to set the values
-const url = config.url;
-const interval = config.interval;
-//const emailUser = config.email.user;
-//const emailPass = config.email.pass;
-//const emailTo = config.email.to;
+const urlToCheck = config.urlToCheck;
+const checkingInterval = config.checkingInterval;
 const mongodbUrl = config.mongodb.url;
 const mongodbDbName = config.mongodb.dbName;
 const mongodbCollectionName = config.mongodb.collectionName;
-const apikey = config.sendgridapi;
+const apikey = config.sendgridApiKey;
 const msg = {
   to: config.email.to,
   from: config.email.from,
@@ -26,22 +24,24 @@ sgMail.setApiKey(apikey);
 // Initialize MongoDB client
 const mongoClient = new MongoClient(mongodbUrl);
 
-// Check website for changes
+// Check target website for changes
 async function checkWebsite() {
   try {
-    // Fetch website HTML
-    const response = await axios.get(url);
+    // Fetch website HTML contents
+    const response = await axios.get(urlToCheck);
 
     // Check if website content has changed
-    const websiteContent = response.data;
-    const websiteHash = hashCode(websiteContent);
+    const websiteContents = response.data;
+    const websiteHash = hashCode(websiteContents);
     const dbHash = await getLatestHash();
 
     if (websiteHash !== dbHash) {
       // Website content has changed, notify user and store change in database
+      console.log('Website content has changed!');
       sgMail.send(msg)
       await saveChange(websiteHash);
-      console.log('Website changed!')
+    } else{
+      console.log('Website content has not changed');
     }
   } catch (error) {
     console.error(error);
@@ -64,7 +64,7 @@ async function getLatestHash() {
   }
 }
 
-// Save a new change in the database
+// Save a new change in the Mongo database
 async function saveChange(hash) {
   try {
     await mongoClient.connect();
@@ -72,7 +72,7 @@ async function saveChange(hash) {
     const changesCollection = db.collection(mongodbCollectionName);
 
     const result = await changesCollection.insertOne({
-      url: url,
+      url: urlToCheck,
       hash: hash,
       timestamp: new Date()
     });
@@ -92,14 +92,14 @@ function hashCode(str) {
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
     hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32bit integer
+    hash = hash & hash; // Convert to 32 bit integer
   }
 
   return hash.toString();
 }
 
 // Start checking the website on an interval (in milliseconds)
-setInterval(checkWebsite, interval * 1000);
+setInterval(checkWebsite, checkingInterval * 1000);
 
 
 
